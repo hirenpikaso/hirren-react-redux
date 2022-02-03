@@ -8,7 +8,6 @@ export default function ProductDescription() {
   const productList = useSelector(products,shallowEqual)
 
   let {id} = useParams();
-  {console.log("My Id",id)}
   return (
     <div className="product-description">
       <div className="prd-img">
