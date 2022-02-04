@@ -5,9 +5,6 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import store from './store';
-import { fetchReqdata } from "./Actions";
-
-store.dispatch(fetchReqdata())
 
 ReactDOM.render(
   <Provider store={store}>

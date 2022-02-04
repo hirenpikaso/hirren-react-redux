@@ -1,45 +1,36 @@
 import { React, useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux'
+import { fetchCAtegories, fetchReqdata } from '../../Actions';
+import store from '../../store';
 import DropdownList from '../Dropdown/dropdown';
 import Product from './product';
 
 const products = (state) => state.products.map((product) => product)
-let catParam = 0;
-
+const categories = (state) => state.categories.map((category) => category)
 const ProductList = () => {
   const productList = useSelector(products,shallowEqual)
+  const categoryList = useSelector(categories,shallowEqual)
+  const [selectedCategory, setSelectedCategory] = useState(0);
   const [filterdProducts, setFilterdProducts] = useState([]);
   useEffect(() => {
-    filterProducts()
+    store.dispatch(fetchReqdata())
+    store.dispatch(fetchCAtegories())
   }, [])
+  useEffect(() => {
+    filterProducts()
+  }, [productList,selectedCategory])
 
-  const categories = productList.map((product) => {
-    return product.categoryId;
-  })
-  const uniqueCategories = [...new Set(categories)];
-  const finalCats = [];
   function filterProducts() {
     let myFilterdProducts = productList.filter((product) => {
-      return product.categoryId === Number(catParam);
+      return product.categoryId === Number(selectedCategory);
     })
     setFilterdProducts(myFilterdProducts)
   }
   const prs = filterdProducts.map((product) => {
     return <Product key={product.id} product={product}/>;
   })
-  for(const cat of uniqueCategories){
-    let obj = {};
-    if(cat === 0) {
-      obj.id=cat;
-      obj.name = 'Laptop'
-    }else if(cat === 1){
-      obj.id=cat;
-      obj.name = 'Mobile'
-    }
-    finalCats.push(obj);
-  }
   function getSelectedCategory(event){
-    catParam = event.target.value;
+    setSelectedCategory(event.target.value)
     filterProducts();
   }
   return (
@@ -47,9 +38,9 @@ const ProductList = () => {
       <div className="category">
       <DropdownList
           labelProp="Select Device "
-          listValues={finalCats}
+          listValues={categoryList}
           onChangeProp={getSelectedCategory}
-          selectedValue={catParam}
+          selectedValue={selectedCategory}
           classProp="field"
           selectClass="" />
       </div>
